@@ -68,13 +68,17 @@ builder.Services.AddSingleton<IDataAccessorOptions>(_ =>
         ?? throw new InvalidOperationException("Connection string not found")));
 
 builder.Services.AddScoped<IDataAccessor, DataAccessor.DataAccessor>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 SqlMapper.AddTypeHandler(new StronglyTypedIdHandler<UserUID, Guid>(v => new UserUID(v), id => id.Value));
+SqlMapper.AddTypeHandler(new StronglyTypedIdHandler<RefreshTokenUID, Guid>(v => new RefreshTokenUID(v), id => id.Value));
 
 DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -125,3 +129,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+public partial class Program { }

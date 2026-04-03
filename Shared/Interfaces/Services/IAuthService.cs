@@ -1,4 +1,5 @@
 using Shared.Interfaces.ReturnResults;
+using Shared.Models;
 
 namespace Shared.Interfaces.Services;
 
@@ -8,5 +9,7 @@ public interface IAuthService {
         string password, 
         string firstName, 
         string lastName);
-    Task<IOperationResult<Token>> LoginAsync(string email, string password);
+    Task<IOperationResult<AuthTokens>> LoginAsync(string email, string password);
+    Task<IOperationResult<AuthTokens>> RefreshAsync(string refreshToken);                                                                   
+    Task<IOperationResult> LogoutAsync(UserUID userUid);
 }
