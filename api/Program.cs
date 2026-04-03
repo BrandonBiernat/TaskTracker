@@ -10,7 +10,10 @@ using Shared.Interfaces.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.SnakeCaseLower);
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>

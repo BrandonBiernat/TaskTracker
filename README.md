@@ -17,16 +17,45 @@ A task tracking API built with .NET 10 and PostgreSQL.
      -d postgres:16
    ```
 
-2. Run migrations:
+2. Run migrations (creates tables):
    ```bash
-   docker exec -i tasktracker-db psql -U postgres -d TaskTracker -f - < SQL/Migrations/001_CreateUsersTable.pgsql
+   docker exec -i tasktracker-db psql -U postgres -d TaskTracker < SQL/Migrations/001_CreateUsersTable.pgsql
    ```
 
-3. Set the connection string:
+3. Deploy functions:
+   ```bash
+   docker exec -i tasktracker-db psql -U postgres -d TaskTracker < SQL/StoredProcedures/{table_name}}/{function_name}
+   ```
+
+4. Set the connection string:
    ```bash
    cd api
    dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=TaskTracker;Username=postgres;Password=postgres"
    ```
+
+### Adding new migrations
+
+Create a new file in `SQL/Migrations/` with the next number prefix (e.g., `002_create_tasks_table.pgsql`). Run it against the database:
+
+```bash
+docker exec -i tasktracker-db psql -U postgres -d TaskTracker < SQL/Migrations/002_create_tasks_table.pgsql
+```
+
+Migrations run once and should never be edited after being applied. To change a table, create a new migration with `ALTER TABLE`.
+
+### Adding or updating functions
+
+Create or edit a `.pgsql` file in `SQL/StoredProcedures/<table_name>/`. Functions use `CREATE OR REPLACE` so they are safe to re-run:
+
+```bash
+docker exec -i tasktracker-db psql -U postgres -d TaskTracker < SQL/StoredProcedures/<table_name>/<function_name>.pgsql
+```
+
+To verify deployed functions:
+
+```bash
+docker exec -i tasktracker-db psql -U postgres -d TaskTracker -c "\df public.*"
+```
 
 ### Starting and stopping
 

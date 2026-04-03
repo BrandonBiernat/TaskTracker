@@ -10,7 +10,7 @@ namespace Repositories;
 public class UserRepository(IDataAccessor dataAccessor) : IUserRepository {
     public async Task<IOperationResult> CreateAsync(User user) =>
         await dataAccessor.ExecuteAsync(
-            storedProcedure: "create_user",
+            function: "create_user",
             parameters: new {
                 p_uid = user.UID.Value,
                 p_email = user.Email,
@@ -21,7 +21,7 @@ public class UserRepository(IDataAccessor dataAccessor) : IUserRepository {
 
     public async Task<IOperationResult> UpdateAsync(User user) =>
         await dataAccessor.ExecuteAsync(
-            storedProcedure: "update_user",
+            function: "update_user",
             parameters: new {
                 p_uid = user.UID.Value,
                 p_password_hash = user.PasswordHash,
@@ -39,7 +39,7 @@ public class UserRepository(IDataAccessor dataAccessor) : IUserRepository {
 
     public async Task<IOperationResult<IEnumerable<User>>> GetByEmailAsync(IEnumerable<string> emails) =>
         await dataAccessor.QueryAsync<User>(
-              storedProcedure: "get_users_by_email",
+              function: "get_users_by_email",
               parameters: new { email_list = emails.ToArray() });
     public async Task<IOperationResult<User?>> GetByEmailAsync(string email) {
         IOperationResult<IEnumerable<User>> result = await GetByEmailAsync([email]);
@@ -50,7 +50,7 @@ public class UserRepository(IDataAccessor dataAccessor) : IUserRepository {
         
     public async Task<IOperationResult<IEnumerable<User>>> GetByUidAsync(IEnumerable<UserUID> uids) =>
         await dataAccessor.QueryAsync<User>(
-            storedProcedure: "get_users_by_uid",
+            function: "get_users_by_uid",
             parameters: new { uid_list = uids.Select(uid => uid.Value).ToArray() });
     public async Task<IOperationResult<User?>> GetByUidAsync(UserUID uid) {
         IOperationResult<IEnumerable<User>> result = await GetByUidAsync([uid]);
