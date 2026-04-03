@@ -1,9 +1,12 @@
 using System.Text;
+using Dapper;
 using DataAccessor;
+using DataAccessor.TypeHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Services;
+using Shared;
 using Shared.Interfaces.DataManagement.DataAccessor;
 using Shared.Interfaces.Repositories;
 using Shared.Interfaces.Services;
@@ -53,6 +56,8 @@ builder.Services.AddSingleton<IDataAccessorOptions>(_ =>
 builder.Services.AddScoped<IDataAccessor, DataAccessor.DataAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+SqlMapper.AddTypeHandler(new StronglyTypedIdHandler<UserUID, Guid>(v => new UserUID(v), id => id.Value));
 
 WebApplication app = builder.Build();
 
