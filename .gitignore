@@ -93,10 +93,13 @@ secrets.json
 *.pfx
 *.p12
 
-# Node (if using JS tooling)
+# Node / SPA
 node_modules/
 npm-debug.log
 yarn-error.log
+spa/dist/
+spa/.env.local
+spa/.env.*.local
 
 # OS files
 .DS_Store
