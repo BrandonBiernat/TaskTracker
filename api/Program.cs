@@ -59,6 +59,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 SqlMapper.AddTypeHandler(new StronglyTypedIdHandler<UserUID, Guid>(v => new UserUID(v), id => id.Value));
 
+DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 WebApplication app = builder.Build();
 
 app.UseExceptionHandler(error => error.Run(async context =>
