@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4ef2c338-f456-44f1-b1ce-4e0235756c33</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../DataAccessor/DataAccessor.csproj" />
+    <ProjectReference Include="../Shared/Shared.csproj" />
+    <ProjectReference Include="../Repositories/Repositories.csproj" />
+    <ProjectReference Include="../Services/Services.csproj" />
+  </ItemGroup>
+
+</Project>
