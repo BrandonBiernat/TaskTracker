@@ -2,6 +2,8 @@ using System.Text;
 using Dapper;
 using DataAccessor;
 using DataAccessor.TypeHandlers;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
@@ -16,7 +18,19 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.PropertyNamingPolicy =
-            System.Text.Json.JsonNamingPolicy.SnakeCaseLower);
+            System.Text.Json.JsonNamingPolicy.SnakeCaseLower)
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            List<string> errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors.Select(err => err.ErrorMessage))
+                .ToList();
+
+            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new { errors });
+        };
+    });
 builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
@@ -57,6 +71,9 @@ builder.Services.AddScoped<IDataAccessor, DataAccessor.DataAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 SqlMapper.AddTypeHandler(new StronglyTypedIdHandler<UserUID, Guid>(v => new UserUID(v), id => id.Value));
 
 DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -67,7 +84,7 @@ app.UseExceptionHandler(error => error.Run(async context =>
 {
     context.Response.StatusCode = 500;
     context.Response.ContentType = "application/json";
-    await context.Response.WriteAsJsonAsync(new { error = "An unexpected error occurred." });
+    await context.Response.WriteAsJsonAsync(new { errors = new[] { "An unexpected error occurred." } });
 }));
 
 app.UseStatusCodePages(async context =>
@@ -89,7 +106,7 @@ app.UseStatusCodePages(async context =>
             : "Request could not be processed."
     };
 
-    await response.WriteAsJsonAsync(new { error = message });
+    await response.WriteAsJsonAsync(new { errors = new[] { message } });
 });
 
 app.UseHttpsRedirection();

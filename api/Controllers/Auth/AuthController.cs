@@ -19,9 +19,9 @@ namespace api.Controllers.Auth
                     password: request.Password,
                     firstName: request.FirstName,
                     lastName: request.LastName);
-            return result.HasSuccessStatus 
+            return result.HasSuccessStatus
                 ? Created()
-                : BadRequest(new { error = result.Message });
+                : BadRequest(new { errors = new[] { result.Message } });
         }
 
         [HttpPost("login")]
@@ -34,7 +34,7 @@ namespace api.Controllers.Auth
                     password: request.Password);
             return result.HasSuccessStatus
                 ? Ok(new { token = result.Payload!.Value })
-                : Unauthorized(new { error = result.Message });
+                : Unauthorized(new { errors = new[] { result.Message } });
         }
     }
 }
