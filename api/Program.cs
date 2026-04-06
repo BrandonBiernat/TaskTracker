@@ -69,10 +69,11 @@ builder.Services.AddSingleton<IDataAccessorOptions>(_ =>
 
 builder.Services.AddScoped<IDataAccessor, DataAccessor.DataAccessor>();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
