@@ -49,7 +49,7 @@ const NotFound = () => {
                     </Button>
                 </div>
 
-                <p className="text-xs text-gray-300 mt-8">
+                <p className="text-xs text-gray-400 mt-8">
                     Error 404 &middot; Page not found &middot; Probably never will be
                 </p>
             </div>
